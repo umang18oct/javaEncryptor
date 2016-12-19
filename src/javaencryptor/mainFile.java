@@ -19,6 +19,8 @@ import java.awt.datatransfer.*;
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Vector;
 /**
  *
  * @author umang18oct
@@ -34,13 +36,13 @@ public class mainFile {
    private JPanel responsePanel;
    private JPanel buttonPanel;
    private static final int PADDING = 50; 
-   ArrayList[] values=new ArrayList[3];
-   ArrayList[] names=new ArrayList[3];
-   JComboBox[] appsName=new JComboBox[3];
+   ArrayList values;   
+   ArrayList names;
+   JComboBox appsName=new JComboBox();
 
    public mainFile(String fName){
       prepareGUI();
-      /*ArrayList tmp;
+      ArrayList tmp;
       tmp = new ArrayList();
       try{
           InputStream ips=new FileInputStream(fName); 
@@ -50,24 +52,26 @@ public class mainFile {
               while ((line=br.readLine())!=null) {
                   String[] s = line.split(" ");
                   tmp.add(s[0]);
-                  tmp.add(s[1]);                  
+                  tmp.add(s[1]);    
+                  //System.out.println(tmp);
               }
           }
         }       
         catch (Exception e){
         }
-        ArrayList[] apps = new ArrayList[6];
         int j=0; int k=0;
-        for(int i=0;i<apps.length;i++){
-        if(i%2==0)
-            names[j++]=apps[i];            
+        values=new ArrayList();
+        names=new ArrayList();
+        for(int i=0;i<tmp.toArray().length;i++){
+        if(i%2!=0)
+            values.add(tmp.get(i));
         else 
-            values[k++]=apps[i];
+            names.add(tmp.get(i));
         }
-        System.out.println(names);
-        for(int i=0;i<appsName.length;i++)
-        appsName[i]=new JComboBox(names);    */ 
-   } 
+       //System.out.println(names);
+       //System.out.println(values);
+        appsName.setModel(new DefaultComboBoxModel(names.toArray()));
+    }
  
    public static void main(String[] args){
       mainFile mainObject = new mainFile("C://Users/umang18oct/Documents/NetBeansProjects/JavaEncryptor/src/javaencryptor/applications.txt");      
@@ -117,10 +121,11 @@ public class mainFile {
       headerLabel.setText("Welcome!");
       JLabel appLabel = new JLabel("",JLabel.CENTER);
       appLabel.setText("Choose Application : "); 
-      final JComboBox appCombo = new JComboBox(appsName);   
+      //final JComboBox appCombo;         
+      //appCombo = new JComboBox((ComboBoxModel) appsName);
       
-      appCombo.setSelectedIndex(0);
-      JScrollPane appListScrollPane = new JScrollPane(appCombo);    
+      appsName.setSelectedIndex(0);
+      JScrollPane appListScrollPane = new JScrollPane(appsName);    
       
       JLabel algoLabel = new JLabel("",JLabel.LEFT);
       algoLabel.setText("Choose Algorithm :    "); 
@@ -157,8 +162,8 @@ public class mainFile {
           public void actionPerformed(ActionEvent e) {
               String textData = textField.getText();
               String keyData="";
-              if (appCombo.getSelectedIndex() != -1) {
-                  keyData +=appCombo.getItemAt(appCombo.getSelectedIndex());
+              if (appsName.getSelectedIndex() != -1) {
+                  keyData +=values.get(appsName.getSelectedIndex());
               }
               String responseData="";
               String algoData="";
@@ -213,8 +218,8 @@ public class mainFile {
           public void actionPerformed(ActionEvent e) {
               String textData = textField.getText();
               String keyData="";
-              if (appCombo.getSelectedIndex() != -1) {
-                  keyData +=appCombo.getItemAt(appCombo.getSelectedIndex());
+              if (appsName.getSelectedIndex() != -1) {
+                  keyData +=values.get(appsName.getSelectedIndex());
               }
               String responseData="";
               String algoData="";
