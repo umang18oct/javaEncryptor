@@ -35,6 +35,7 @@ public class mainFile {
    private JPanel textPanel;
    private JPanel responsePanel;
    private JPanel buttonPanel;
+   private int[] counter= new int[5];
    private static final int PADDING = 50; 
    ArrayList values;   
    ArrayList names;
@@ -71,6 +72,11 @@ public class mainFile {
        //System.out.println(names);
        //System.out.println(values);
         appsName.setModel(new DefaultComboBoxModel(names.toArray()));
+        counter[0]=0;
+        counter[1]=0;
+        counter[2]=0;
+        counter[3]=0;
+        counter[4]=0;
     }
  
    public static void main(String[] args){
@@ -132,7 +138,7 @@ public class mainFile {
       final DefaultComboBoxModel algoName = new DefaultComboBoxModel();
       algoName.addElement("MDS");
       algoName.addElement("AES");
-      algoName.addElement("3DASH");
+      algoName.addElement("Triple DES");
       algoName.addElement("RC4");
       algoName.addElement("MD5");
       final JComboBox algoCombo = new JComboBox(algoName);    
@@ -172,42 +178,55 @@ public class mainFile {
               }
               switch (algoData) {
                   case "RC4":
-                  {
-                      try {
-                      responseData+=rc4.encrypt(textData,keyData);
-                      } catch (Exception ex) {
-                        Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
-                      }
-                      break;
-                  }
+                            {
+                                try {
+                                responseData+=rc4.encrypt(textData,keyData);
+                                } catch (Exception ex) {
+                                  Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                counter[0]=1;
+                                break;
+                            }
                   case "MD5":
-                  {
-                      try {
-                      responseData+=md5.MD5(textData);
-                      } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
-                      Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
-                      }
-                      break;
-                  }
+                            {
+                                try {
+                                responseData+=md5.MD5(textData);
+                                } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
+                                Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                counter[1]=1;
+                                break;
+                            }
                   case "MDS":
-                  {
-                      //mds obj1= new mds(textData,keyData);
-                      break;
-                  }
+                            {
+                                //mds obj1= new mds(textData,keyData);
+                                counter[2]=1;
+                                break;
+
+                            }
                   case "AES":
-                  {           
-                      try {
-                          responseData+=aes.encrypt(textData,keyData);
-                      } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | IOException ex) {
-                          Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
-                      }
-                      break;
-                  }
-                  case "3DASH":
-                  {
-                      //dash3 obj1= new dash3(textData,keyData);
-                      break;
-                  }
+                            {           
+                                try {
+                                    responseData+=aes.encrypt(textData,keyData);
+                                } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | IOException ex) {
+                                    Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                counter[3]=1;
+                                break;
+                            }
+                  case "Triple DES":
+                                    {
+                                        tripleDES obj1 = null;
+                                        try {
+                                          obj1 = new tripleDES();
+                                        } 
+                                        catch (Exception ex) {
+                                          Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                        responseData+=obj1.encrypt(textData,keyData);
+                                        counter[4]=1;
+                                        break;                      
+                                    }
               }
               //String responseData = ""+obj1.encrypt(textData,keyData);
               responseField.setText(responseData);
@@ -228,37 +247,58 @@ public class mainFile {
               }
               switch (algoData) {
                   case "RC4":
-                  {
-                    try {
-                      responseData+=rc4.decrypt(textData,keyData);
-                    } catch (Exception ex) {
-                        Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                     break;
-                  }
+                            { if(counter[0]==1){
+                                  try {
+                                    responseData+=rc4.decrypt(textData,keyData);
+                                  } catch (Exception ex) {
+                                      Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
+                                  }
+                              }
+                              else{}
+                              break;
+                            }
                   case "MD5":
-                  {
-                  
-                  }
+                            {
+                                if(counter[1]==1){
+                                }
+                                else{}
+                                break;
+                            }
                   case "MDS":
-                  {
-                      //mds obj1= new mds(textData,keyData);
-                      break;
-                  }
+                            {
+                                if(counter[2]==1){
+                                }
+                                else{}
+                                //mds obj1= new mds(textData,keyData);
+                                break;
+                            }
                   case "AES":
-                  {
-                      try {
-                          responseData+=aes.decrypt(textData,keyData);
-                      } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
-                          Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
-                      }
-                      break;
-                  }
-                  case "3DASH":
-                  {
-                      //dash3 obj1= new dash3(textData,keyData);
-                      break;
-                  }
+                            {
+                                if(counter[3]==1){
+                                    try {
+                                        responseData+=aes.decrypt(textData,keyData);
+                                    } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
+                                        Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                }
+                                else{}
+                                break;
+                            }
+                  case "Triple DES":
+                                    {
+                                        if(counter[4]==1){                                            
+                                            tripleDES obj1 = null;
+                                            try {
+                                              obj1 = new tripleDES();
+                                            } 
+                                            catch (Exception ex) {
+                                              Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
+                                            }                                        
+                                            responseData+=obj1.decrypt(textData,keyData);
+                                        }
+                                        else{}
+                                        break;
+                                    }
               }
               //String responseData = ""+obj1.decrypt(textData,keyData);
               responseField.setText(responseData);
