@@ -18,9 +18,6 @@ import javax.swing.*;
 import java.awt.datatransfer.*;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Vector;
 /**
  *
  * @author umang18oct
@@ -30,12 +27,14 @@ public class mainFile {
    private JFrame mainFrame;
    private JLabel headerLabel;
    private JLabel statusLabel;
+   private JButton encryptButton;
+   private JButton decryptButton;
    private JPanel appPanel;
    private JPanel algoPanel;
    private JPanel textPanel;
    private JPanel responsePanel;
    private JPanel buttonPanel;
-   private int[] counter= new int[5];
+   private int[] counter= new int[4];
    private static final int PADDING = 50; 
    ArrayList values;   
    ArrayList names;
@@ -76,7 +75,6 @@ public class mainFile {
         counter[1]=0;
         counter[2]=0;
         counter[3]=0;
-        counter[4]=0;
     }
  
    public static void main(String[] args){
@@ -136,7 +134,6 @@ public class mainFile {
       JLabel algoLabel = new JLabel("",JLabel.LEFT);
       algoLabel.setText("Choose Algorithm :    "); 
       final DefaultComboBoxModel algoName = new DefaultComboBoxModel();
-      algoName.addElement("MDS");
       algoName.addElement("AES");
       algoName.addElement("Triple DES");
       algoName.addElement("RC4");
@@ -153,6 +150,7 @@ public class mainFile {
       responseLabel.setText("Response :                  ");  
       JTextField responseField = new JTextField(16);
       responseField.setEditable(false);
+      
       JButton copyButton = new JButton("COPY");
       copyButton.addActionListener(new ActionListener (){
           public void actionPerformed(ActionEvent e){
@@ -163,7 +161,7 @@ public class mainFile {
           }
       });
       
-      JButton encryptButton = new JButton("ENCRYPT");
+      encryptButton = new JButton("ENCRYPT");
       encryptButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
               String textData = textField.getText();
@@ -178,40 +176,36 @@ public class mainFile {
               }
               switch (algoData) {
                   case "RC4":
-                            {
+                            {  
                                 try {
                                 responseData+=rc4.encrypt(textData,keyData);
                                 } catch (Exception ex) {
                                   Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 counter[0]=1;
+                                decryptButton.setEnabled(true);
                                 break;
                             }
                   case "MD5":
-                            {
+                            {   
                                 try {
                                 responseData+=md5.MD5(textData);
                                 } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
                                 Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                counter[1]=1;
+                                counter[1]=1;                                
+                                decryptButton.setEnabled(false);                                
                                 break;
-                            }
-                  case "MDS":
-                            {
-                                //mds obj1= new mds(textData,keyData);
-                                counter[2]=1;
-                                break;
-
                             }
                   case "AES":
-                            {           
+                            {
                                 try {
                                     responseData+=aes.encrypt(textData,keyData);
                                 } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | IOException ex) {
                                     Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                counter[3]=1;
+                                counter[2]=1;
+                                decryptButton.setEnabled(true);
                                 break;
                             }
                   case "Triple DES":
@@ -224,7 +218,8 @@ public class mainFile {
                                           Logger.getLogger(mainFile.class.getName()).log(Level.SEVERE, null, ex);
                                         }
                                         responseData+=obj1.encrypt(textData,keyData);
-                                        counter[4]=1;
+                                        counter[3]=1;
+                                        decryptButton.setEnabled(true);
                                         break;                      
                                     }
               }
@@ -232,7 +227,8 @@ public class mainFile {
               responseField.setText(responseData);
           }
       });      
-      JButton decryptButton = new JButton("DECRYPT");
+      decryptButton = new JButton("DECRYPT");
+      decryptButton.setEnabled(false);
       decryptButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
               String textData = textField.getText();
@@ -255,6 +251,7 @@ public class mainFile {
                                   }
                               }
                               else{}
+                              decryptButton.setEnabled(false);
                               break;
                             }
                   case "MD5":
@@ -262,19 +259,12 @@ public class mainFile {
                                 if(counter[1]==1){
                                 }
                                 else{}
-                                break;
-                            }
-                  case "MDS":
-                            {
-                                if(counter[2]==1){
-                                }
-                                else{}
-                                //mds obj1= new mds(textData,keyData);
+                                decryptButton.setEnabled(false);
                                 break;
                             }
                   case "AES":
                             {
-                                if(counter[3]==1){
+                                if(counter[2]==1){
                                     try {
                                         responseData+=aes.decrypt(textData,keyData);
                                     } catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | UnsupportedEncodingException | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
@@ -282,11 +272,12 @@ public class mainFile {
                                     }
                                 }
                                 else{}
+                                decryptButton.setEnabled(false);
                                 break;
                             }
                   case "Triple DES":
                                     {
-                                        if(counter[4]==1){                                            
+                                        if(counter[3]==1){                                            
                                             tripleDES obj1 = null;
                                             try {
                                               obj1 = new tripleDES();
@@ -297,6 +288,7 @@ public class mainFile {
                                             responseData+=obj1.decrypt(textData,keyData);
                                         }
                                         else{}
+                                        decryptButton.setEnabled(false);
                                         break;
                                     }
               }
@@ -328,7 +320,7 @@ public class mainFile {
       buttonPanel.add(encryptButton);
       buttonPanel.add(Box.createRigidArea(new Dimension(50,0)));
       buttonPanel.add(decryptButton);
-      
+   
       mainFrame.setVisible(true);             
    }
 }
